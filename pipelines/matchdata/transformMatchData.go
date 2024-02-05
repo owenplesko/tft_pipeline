@@ -6,9 +6,9 @@ import (
 )
 
 func TransformMatchData(in chan *riot.RiotTFTMatchResponse) ([]*types.TFTMatch, *types.AugmentStatsArr) {
-	matchStream, matchArr := filterNonRankedGames(transformToTFTMatch(in))
-	augmentStats := buildTFTAugmentStats(matchStream)
-	return matchArr, augmentStats
+	matches := filterNonRankedGames(transformToTFTMatch(in))
+	augmentStats := buildTFTAugmentStats(matches)
+	return matches, augmentStats
 }
 
 func transformToTFTMatch(in chan *riot.RiotTFTMatchResponse) chan *types.TFTMatch {
@@ -22,27 +22,22 @@ func transformToTFTMatch(in chan *riot.RiotTFTMatchResponse) chan *types.TFTMatc
 	return out
 }
 
-func filterNonRankedGames(in chan *types.TFTMatch) (chan *types.TFTMatch, []*types.TFTMatch) {
-	out := make(chan *types.TFTMatch)
+func filterNonRankedGames(in chan *types.TFTMatch) []*types.TFTMatch {
 	arr := []*types.TFTMatch{}
 
-	go func() {
-		for match := range in {
-			if match.QueueId == 1100 {
-				out <- match
-				arr = append(arr, match)
-			}
+	for match := range in {
+		if match.QueueId == 1100 {
+			arr = append(arr, match)
 		}
-		close(out)
-	}()
+	}
 
-	return out, arr
+	return arr
 }
 
-func buildTFTAugmentStats(in chan *types.TFTMatch) *types.AugmentStatsArr {
+func buildTFTAugmentStats(arr []*types.TFTMatch) *types.AugmentStatsArr {
 	augmentStats := types.NewAugmentStatsArr()
 
-	for match := range in {
+	for _, match := range arr {
 		for _, comp := range match.Comps {
 			for i, augmentId := range comp.Augments {
 				augmentStats.InsertAugment(types.AugmentOccurence{

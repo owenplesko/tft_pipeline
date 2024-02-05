@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"time"
 
 	_ "github.com/lib/pq"
 )
@@ -12,9 +11,6 @@ import (
 var db *sql.DB
 
 func InitConnection(connection string) {
-	// Allow railway to initialize private network
-	time.Sleep(1 * time.Second)
-
 	// Open a connection to the database
 	var err error
 	db, err = sql.Open("postgres", connection)
