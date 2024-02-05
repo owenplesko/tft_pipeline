@@ -13,7 +13,7 @@ func StoreTFTMatch(tx *sql.Tx, match *types.TFTMatch) {
 		VALUES ($1, $2)
 	`, match.MatchId, match.Date)
 	if err != nil {
-		log.Println("Error storing match to db:", err)
+		log.Printf("Error storing match to db: %v\n", err)
 	}
 }
 

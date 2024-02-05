@@ -21,7 +21,7 @@ func UpsertTFTRankedPlayer(player *types.TFTRankedPlayer) {
 
 	_, err := db.Exec(query, player.Puuid, player.Tier, player.Rank, player.Inactive)
 	if err != nil {
-		log.Println("Error storing player to db:", err)
+		log.Printf("Error storing player to db: %v\n", err)
 	}
 }
 
@@ -34,7 +34,7 @@ func UpdateMatchesLastRequested(tx *sql.Tx, player *types.TFTRankedPlayer) {
 
 	_, err := tx.Exec(query, player.Puuid, player.MatchesLastRequested)
 	if err != nil {
-		log.Println("Error updating matches_last_updated in db:", err)
+		log.Printf("Error updating matches_last_updated in db: %v\n", err)
 	}
 }
 
@@ -48,7 +48,7 @@ func QueryTFTRankedPlayersByMatchesLastUpdated(limit int) []*types.TFTRankedPlay
 
 	rows, err := db.Query(query, limit)
 	if err != nil {
-		log.Println("Error querying ranked_player by matches last updated:", err)
+		log.Printf("Error querying ranked_player by matches last updated: %v\n", err)
 	}
 
 	var rankedPlayers []*types.TFTRankedPlayer
@@ -57,7 +57,7 @@ func QueryTFTRankedPlayersByMatchesLastUpdated(limit int) []*types.TFTRankedPlay
 		player := &types.TFTRankedPlayer{}
 
 		if err := rows.Scan(&player.Puuid); err != nil {
-			log.Println("Error scanning row:", err)
+			log.Printf("Error scanning row: %v\n", err)
 			continue
 		}
 

@@ -1,8 +1,6 @@
 package rankedplayers
 
 import (
-	"log"
-
 	"oplesko.com/tft_pipeline/riot"
 )
 
@@ -64,8 +62,6 @@ func produceTFTRankedPlayers() chan *riot.RiotRankEntryResponse {
 					break
 				}
 			}
-
-			log.Printf("finished collecting data from %v with %v pages and %v total entries\n", entryPath, page-1, totalEntries)
 		}
 		close(out)
 	}()
