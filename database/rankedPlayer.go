@@ -42,7 +42,7 @@ func QueryTFTRankedPlayersByMatchesLastUpdated(limit int) []*types.TFTRankedPlay
 	query := `
 		SELECT puuid 
 		FROM ranked_player 
-		ORDER BY matches_last_requested ASC 
+		ORDER BY matches_last_requested ASC NULLS FIRST
 		LIMIT $1
 	`
 
