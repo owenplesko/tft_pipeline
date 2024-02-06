@@ -12,9 +12,11 @@ import (
 var db *sql.DB
 
 func InitConnection(connection string) {
+	// Wait for railway private network to initialize...
+	time.Sleep(3 * time.Second)
+
 	// Open a connection to the database
 	var err error
-	time.Sleep(3 * time.Second)
 	db, err = sql.Open("postgres", connection)
 	if err != nil {
 		log.Fatal(err)
