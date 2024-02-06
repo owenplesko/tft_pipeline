@@ -74,8 +74,8 @@ func RequestTFTMatchData(matchId string) (*RiotTFTMatchResponse, error) {
 
 	// Check if the request was successful (status code 200)
 	if resp.StatusCode != http.StatusOK {
-		log.Printf("Request failed with status code: %v\n", resp.StatusCode)
-		return nil, err
+		log.Printf("Request %v failed with status code: %v\n", url, resp.StatusCode)
+		return nil, fmt.Errorf("Request %v failed with status code: %v\n", url, resp.StatusCode)
 	}
 
 	// Read the response body
@@ -88,8 +88,8 @@ func RequestTFTMatchData(matchId string) (*RiotTFTMatchResponse, error) {
 	// Parse the JSON data into a slice of TFTRankEntry
 	matchData := new(RiotTFTMatchResponse)
 	err = json.Unmarshal(body, matchData)
-	if err != nil || matchData == nil {
-		log.Println("Error decoding JSON:", err)
+	if err != nil {
+		log.Printf("Error decoding JSON: %v\n", err)
 		return nil, err
 	}
 
