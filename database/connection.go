@@ -12,7 +12,7 @@ import (
 var db *sql.DB
 
 func InitConnection(connection string) {
-	// Wait for railway private network to initialize...
+	// Wait for railway private network to initialize
 	time.Sleep(3 * time.Second)
 
 	// Open a connection to the database

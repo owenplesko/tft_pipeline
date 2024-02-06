@@ -15,7 +15,6 @@ func produceTFTMatchData(matchIds []string) chan *riot.RiotTFTMatchResponse {
 				out <- matchRes
 			}
 		}
-
 		close(out)
 	}()
 

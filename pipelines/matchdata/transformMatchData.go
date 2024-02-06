@@ -6,26 +6,24 @@ import (
 )
 
 func TransformMatchData(in chan *riot.RiotTFTMatchResponse) ([]*types.TFTMatch, *types.AugmentStatsArr) {
-	matches := filterNonRankedGames(transformToTFTMatch(in))
-	augmentStats := buildTFTAugmentStats(matches)
+	matches := transformToTFTMatch(in)
+	rankedMatches := filterNonRankedGames(matches)
+	augmentStats := buildTFTAugmentStats(rankedMatches)
 	return matches, augmentStats
 }
 
-func transformToTFTMatch(in chan *riot.RiotTFTMatchResponse) chan *types.TFTMatch {
-	out := make(chan *types.TFTMatch)
-	go func() {
-		for raw := range in {
-			out <- types.NewTFTMatch(raw)
-		}
-		close(out)
-	}()
-	return out
+func transformToTFTMatch(in chan *riot.RiotTFTMatchResponse) []*types.TFTMatch {
+	arr := []*types.TFTMatch{}
+	for raw := range in {
+		arr = append(arr, types.NewTFTMatch(raw))
+	}
+	return arr
 }
 
-func filterNonRankedGames(in chan *types.TFTMatch) []*types.TFTMatch {
+func filterNonRankedGames(in []*types.TFTMatch) []*types.TFTMatch {
 	arr := []*types.TFTMatch{}
 
-	for match := range in {
+	for _, match := range in {
 		if match.QueueId == 1100 {
 			arr = append(arr, match)
 		}
