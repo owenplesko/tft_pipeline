@@ -1,7 +1,9 @@
 package rankedplayers
 
+import "time"
+
 func BeginRankedPlayerPipeline() {
-	for {
+	for range time.Tick(24 * time.Hour) {
 		Load(Transform(Extract()))
 	}
 }
