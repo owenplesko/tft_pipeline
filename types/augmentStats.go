@@ -9,7 +9,6 @@ type AugmentStat struct {
 	GameVersion          string
 	AugmentId            string
 	Pick                 int
-	Tier                 string
 	AccumulatedPlacement int
 	Frequency            int
 }
@@ -19,7 +18,6 @@ type AugmentOccurence struct {
 	GameVersion string
 	AugmentId   string
 	Pick        int
-	Tier        string
 	Placement   int
 }
 
@@ -38,8 +36,7 @@ func (this *AugmentStatsArr) InsertAugment(augmentOccurence AugmentOccurence) {
 		if stat.GameDate == augmentOccurence.GameDate &&
 			stat.GameVersion == augmentOccurence.GameVersion &&
 			stat.AugmentId == augmentOccurence.AugmentId &&
-			stat.Pick == augmentOccurence.Pick &&
-			stat.Tier == augmentOccurence.Tier {
+			stat.Pick == augmentOccurence.Pick {
 			stat.AccumulatedPlacement += augmentOccurence.Placement
 			stat.Frequency += 1
 			return
@@ -51,7 +48,6 @@ func (this *AugmentStatsArr) InsertAugment(augmentOccurence AugmentOccurence) {
 		GameVersion:          augmentOccurence.GameVersion,
 		AugmentId:            augmentOccurence.AugmentId,
 		Pick:                 augmentOccurence.Pick,
-		Tier:                 augmentOccurence.Tier,
 		AccumulatedPlacement: augmentOccurence.Placement,
 		Frequency:            1,
 	})

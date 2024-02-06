@@ -43,7 +43,6 @@ func buildTFTAugmentStats(arr []*types.TFTMatch) *types.AugmentStatsArr {
 					GameVersion: match.GameVersion,
 					AugmentId:   augmentId,
 					Pick:        i + 1,
-					Tier:        "placeholder",
 					Placement:   comp.Placement,
 				})
 			}

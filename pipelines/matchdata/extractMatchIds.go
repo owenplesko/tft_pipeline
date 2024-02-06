@@ -14,7 +14,7 @@ func ExtractMatchIds() (chan string, []*types.TFTRankedPlayer) {
 }
 
 func extractRankedPlayersToUpdate() []*types.TFTRankedPlayer {
-	return database.QueryTFTRankedPlayersByMatchesLastUpdated(10)
+	return database.QueryTFTRankedPlayersByMatchesLastUpdated(100)
 }
 
 func getTFTMatchIds(rankedPlayers []*types.TFTRankedPlayer) chan string {
