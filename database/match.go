@@ -3,6 +3,7 @@ package database
 import (
 	"database/sql"
 	"log"
+	"time"
 
 	"oplesko.com/tft_pipeline/types"
 )
@@ -29,4 +30,16 @@ func MatchIdIsKnown(matchId string) bool {
 	}
 
 	return exists
+}
+
+func PruneMatchIds(daysOld time.Duration) {
+	daysAgo := time.Now().Add(-daysOld)
+
+	_, err := db.Exec(`
+		DELETE FROM tft_match
+		WHERE date_played < $1
+	`, daysAgo)
+	if err != nil {
+		log.Println("error pruning matchIds: ", err)
+	}
 }
