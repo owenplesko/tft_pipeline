@@ -16,7 +16,7 @@ func UpsertTFTRankedPlayer(player *types.TFTRankedPlayer) {
 		ON CONFLICT (puuid) DO UPDATE
 		SET tier = excluded.tier,
 		    rank = excluded.rank,
-		    inactive = excluded.inactive;
+		    inactive = excluded.inactive
 	`
 
 	_, err := db.Exec(query, player.Puuid, player.Tier, player.Rank, player.Inactive)
