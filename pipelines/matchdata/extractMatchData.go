@@ -2,17 +2,25 @@ package matchdata
 
 import "oplesko.com/tft_pipeline/riot"
 
-func ExtractMatchData(matchIds []string) chan *riot.RiotTFTMatchResponse {
-	return produceTFTMatchData(matchIds)
+func ExtractMatchData(matchOccurences []MatchOccurence) chan MatchResponseWithContext {
+	return produceTFTMatchData(matchOccurences)
 }
 
-func produceTFTMatchData(matchIds []string) chan *riot.RiotTFTMatchResponse {
-	out := make(chan *riot.RiotTFTMatchResponse)
+type MatchResponseWithContext struct {
+	Match    *riot.RiotTFTMatchResponse
+	GameTier string
+}
+
+func produceTFTMatchData(matchOccurences []MatchOccurence) chan MatchResponseWithContext {
+	out := make(chan MatchResponseWithContext)
 
 	go func() {
-		for _, matchId := range matchIds {
-			if matchRes, err := riot.RequestTFTMatchData(matchId); err == nil {
-				out <- matchRes
+		for _, occurence := range matchOccurences {
+			if matchRes, err := riot.RequestTFTMatchData(occurence.MatchId); err == nil {
+				out <- MatchResponseWithContext{
+					Match:    matchRes,
+					GameTier: occurence.GameTier,
+				}
 			}
 		}
 		close(out)

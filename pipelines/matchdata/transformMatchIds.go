@@ -2,20 +2,20 @@ package matchdata
 
 import "oplesko.com/tft_pipeline/database"
 
-func TransformMatchIds(matchIds chan string) []string {
-	return filterKnownMatchIds(filterDuplicates(matchIds))
+func TransformMatchIds(matchOccurences chan MatchOccurence) []MatchOccurence {
+	return filterKnownMatchIds(filterDuplicates(matchOccurences))
 }
 
-func filterDuplicates(in chan string) chan string {
-	out := make(chan string)
+func filterDuplicates(in chan MatchOccurence) chan MatchOccurence {
+	out := make(chan MatchOccurence)
 
 	go func() {
 		seenStr := make(map[string]bool)
 
-		for str := range in {
-			if _, seen := seenStr[str]; !seen {
-				seenStr[str] = true
-				out <- str
+		for occurence := range in {
+			if _, seen := seenStr[occurence.MatchId]; !seen {
+				seenStr[occurence.MatchId] = true
+				out <- occurence
 			}
 		}
 
@@ -25,12 +25,12 @@ func filterDuplicates(in chan string) chan string {
 	return out
 }
 
-func filterKnownMatchIds(in chan string) []string {
-	unknownMatchIds := []string{}
+func filterKnownMatchIds(in chan MatchOccurence) []MatchOccurence {
+	unknownMatchIds := []MatchOccurence{}
 
-	for matchId := range in {
-		if !database.MatchIdIsKnown(matchId) {
-			unknownMatchIds = append(unknownMatchIds, matchId)
+	for occurence := range in {
+		if !database.MatchIdIsKnown(occurence.MatchId) {
+			unknownMatchIds = append(unknownMatchIds, occurence)
 		}
 	}
 

@@ -9,15 +9,17 @@ import (
 
 type TFTMatch struct {
 	MatchId     string
+	GameTier    string
 	Date        time.Time
 	QueueId     int
 	GameVersion string
 	Comps       []riot.RiotTFTCompResponse
 }
 
-func NewTFTMatch(raw *riot.RiotTFTMatchResponse) *TFTMatch {
+func NewTFTMatch(raw *riot.RiotTFTMatchResponse, tier string) *TFTMatch {
 	match := &TFTMatch{
 		MatchId:     raw.MetaData.MatchId,
+		GameTier:    tier,
 		Date:        time.UnixMilli(raw.Info.Date).Round(24 * time.Hour),
 		QueueId:     raw.Info.QueueId,
 		GameVersion: extractGameVersion(raw.Info.Version),

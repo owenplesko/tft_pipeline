@@ -8,17 +8,22 @@ import (
 	"oplesko.com/tft_pipeline/types"
 )
 
-func ExtractMatchIds() (chan string, []*types.TFTRankedPlayer) {
+type MatchOccurence struct {
+	MatchId  string
+	GameTier string
+}
+
+func ExtractMatchIds() (chan MatchOccurence, []*types.TFTRankedPlayer) {
 	players := extractRankedPlayersToUpdate()
 	return getTFTMatchIds(players), players
 }
 
 func extractRankedPlayersToUpdate() []*types.TFTRankedPlayer {
-	return database.QueryTFTRankedPlayersByMatchesLastUpdated(100)
+	return database.QueryTFTRankedPlayersByMatchesLastUpdated(25)
 }
 
-func getTFTMatchIds(rankedPlayers []*types.TFTRankedPlayer) chan string {
-	matchIdStream := make(chan string)
+func getTFTMatchIds(rankedPlayers []*types.TFTRankedPlayer) chan MatchOccurence {
+	matchIdStream := make(chan MatchOccurence)
 
 	go func() {
 		for _, player := range rankedPlayers {
@@ -27,7 +32,10 @@ func getTFTMatchIds(rankedPlayers []*types.TFTRankedPlayer) chan string {
 			matchesAfter := time.Now().Add(-3 * 24 * time.Hour).Unix()
 			matchIds := riot.RequestTFTMatchHistory(player.Puuid, matchesAfter)
 			for _, matchId := range matchIds {
-				matchIdStream <- matchId
+				matchIdStream <- MatchOccurence{
+					MatchId:  matchId,
+					GameTier: player.Tier,
+				}
 			}
 		}
 		close(matchIdStream)

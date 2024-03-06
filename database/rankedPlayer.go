@@ -40,7 +40,7 @@ func UpdateMatchesLastRequested(tx *sql.Tx, player *types.TFTRankedPlayer) {
 
 func QueryTFTRankedPlayersByMatchesLastUpdated(limit int) []*types.TFTRankedPlayer {
 	query := `
-		SELECT puuid 
+		SELECT puuid, tier 
 		FROM ranked_player 
 		ORDER BY matches_last_requested ASC NULLS FIRST
 		LIMIT $1
@@ -55,10 +55,9 @@ func QueryTFTRankedPlayersByMatchesLastUpdated(limit int) []*types.TFTRankedPlay
 	defer rows.Close()
 	for rows.Next() {
 		player := &types.TFTRankedPlayer{}
-
-		if err := rows.Scan(&player.Puuid); err != nil {
-			log.Printf("Error scanning row: %v\n", err)
-			continue
+		err := rows.Scan(&player.Puuid, &player.Tier)
+		if err != nil {
+			log.Printf("Error scanning ranked_player: %v\n", err)
 		}
 
 		rankedPlayers = append(rankedPlayers, player)

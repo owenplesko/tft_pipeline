@@ -1,21 +1,20 @@
 package matchdata
 
 import (
-	"oplesko.com/tft_pipeline/riot"
 	"oplesko.com/tft_pipeline/types"
 )
 
-func TransformMatchData(in chan *riot.RiotTFTMatchResponse) ([]*types.TFTMatch, *types.AugmentStatsArr) {
+func TransformMatchData(in chan MatchResponseWithContext) ([]*types.TFTMatch, *types.AugmentStatsArr) {
 	matches := transformToTFTMatch(in)
 	rankedMatches := filterNonRankedGames(matches)
 	augmentStats := buildTFTAugmentStats(rankedMatches)
 	return matches, augmentStats
 }
 
-func transformToTFTMatch(in chan *riot.RiotTFTMatchResponse) []*types.TFTMatch {
+func transformToTFTMatch(in chan MatchResponseWithContext) []*types.TFTMatch {
 	arr := []*types.TFTMatch{}
-	for raw := range in {
-		arr = append(arr, types.NewTFTMatch(raw))
+	for matchRes := range in {
+		arr = append(arr, types.NewTFTMatch(matchRes.Match, matchRes.GameTier))
 	}
 	return arr
 }
@@ -39,7 +38,7 @@ func buildTFTAugmentStats(arr []*types.TFTMatch) *types.AugmentStatsArr {
 		for _, comp := range match.Comps {
 			for i, augmentId := range comp.Augments {
 				augmentStats.InsertAugment(types.AugmentOccurence{
-					GameDate:    match.Date,
+					GameTier:    match.GameTier,
 					GameVersion: match.GameVersion,
 					AugmentId:   augmentId,
 					Pick:        i + 1,

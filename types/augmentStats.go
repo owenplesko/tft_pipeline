@@ -1,11 +1,7 @@
 package types
 
-import (
-	"time"
-)
-
 type AugmentStat struct {
-	GameDate              time.Time
+	GameTier              string
 	GameVersion           string
 	AugmentId             string
 	AggregateAugmentStats []AggregateAugmentStat
@@ -17,7 +13,7 @@ type AggregateAugmentStat struct {
 }
 
 type AugmentOccurence struct {
-	GameDate    time.Time
+	GameTier    string
 	GameVersion string
 	AugmentId   string
 	Pick        int
@@ -36,7 +32,7 @@ func (this *AugmentStatsArr) InsertAugment(augmentOccurence AugmentOccurence) {
 	}
 
 	for _, stat := range *this {
-		if stat.GameDate == augmentOccurence.GameDate &&
+		if stat.GameTier == augmentOccurence.GameTier &&
 			stat.GameVersion == augmentOccurence.GameVersion &&
 			stat.AugmentId == augmentOccurence.AugmentId {
 
@@ -49,7 +45,7 @@ func (this *AugmentStatsArr) InsertAugment(augmentOccurence AugmentOccurence) {
 	}
 
 	stat := AugmentStat{
-		GameDate:              augmentOccurence.GameDate,
+		GameTier:              augmentOccurence.GameTier,
 		GameVersion:           augmentOccurence.GameVersion,
 		AugmentId:             augmentOccurence.AugmentId,
 		AggregateAugmentStats: make([]AggregateAugmentStat, 4),
